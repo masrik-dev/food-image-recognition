@@ -1,3 +1,5 @@
+# **Currently working on it. Please ignore the current readme file.**
+
 # 🍲 Food Image Recognition
 
 **Food Image Recognition** is a deep learning project focused on classifying different types of food from photographs.  
