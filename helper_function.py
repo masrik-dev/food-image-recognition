@@ -1,4 +1,5 @@
 ### Here are some functions which used in the model
+# Functions: [load_and_prep_image, make_confusion_matrix, pred_and_plot, plot_loss_curves, calculate_results]
 
 import tensorflow as tf
 
