@@ -1,5 +1,5 @@
 ### Here are some functions which used in the model
-# Functions: [load_and_prep_image, make_confusion_matrix, pred_and_plot, plot_loss_curves, calculate_results]
+# Functions: [load_and_prep_image, make_confusion_matrix, pred_and_plot, plot_loss_curves, calculate_results, unzip_data, compare_history, walk_through_dir]
 
 import tensorflow as tf
 
@@ -189,3 +189,84 @@ def calculate_results(y_true, y_pred):
                      "recall": model_recall,
                      "f1": model_f1}
     return model_results 
+
+# Create function to unzip a zipfile into current working directory 
+import zipfile
+
+def unzip_data(filename):
+  """
+  Unzips filename into the current working directory.
+
+  Args:
+    filename (str): a filepath to a target zip folder to be unzipped.
+  """
+  zip_ref = zipfile.ZipFile(filename, "r")
+  zip_ref.extractall()
+  zip_ref.close()
+
+# Walk through an image classification directory and find out how many files (images)
+# are in each subdirectory.
+import os
+
+def walk_through_dir(dir_path):
+  """
+  Walks through dir_path returning its contents.
+
+  Args:
+    dir_path (str): target directory
+  
+  Returns:
+    A print out of:
+      number of subdiretories in dir_path
+      number of images (files) in each subdirectory
+      name of each subdirectory
+  """
+  for dirpath, dirnames, filenames in os.walk(dir_path):
+    print(f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'.")
+
+
+def compare_historys(original_history, new_history, initial_epochs=5):
+    """
+    Compares two TensorFlow model History objects.
+    
+    Args:
+      original_history: History object from original model (before new_history)
+      new_history: History object from continued model training (after original_history)
+      initial_epochs: Number of epochs in original_history (new_history plot starts from here) 
+    """
+    
+    # Get original history measurements
+    acc = original_history.history["accuracy"]
+    loss = original_history.history["loss"]
+
+    val_acc = original_history.history["val_accuracy"]
+    val_loss = original_history.history["val_loss"]
+
+    # Combine original history with new history
+    total_acc = acc + new_history.history["accuracy"]
+    total_loss = loss + new_history.history["loss"]
+
+    total_val_acc = val_acc + new_history.history["val_accuracy"]
+    total_val_loss = val_loss + new_history.history["val_loss"]
+
+    # Make plots
+    plt.figure(figsize=(8, 8))
+    plt.subplot(2, 1, 1)
+    plt.plot(total_acc, label='Training Accuracy')
+    plt.plot(total_val_acc, label='Validation Accuracy')
+    plt.plot([initial_epochs-1, initial_epochs-1],
+              plt.ylim(), label='Start Fine Tuning') # reshift plot around epochs
+    plt.legend(loc='lower right')
+    plt.title('Training and Validation Accuracy')
+
+    plt.subplot(2, 1, 2)
+    plt.plot(total_loss, label='Training Loss')
+    plt.plot(total_val_loss, label='Validation Loss')
+    plt.plot([initial_epochs-1, initial_epochs-1],
+              plt.ylim(), label='Start Fine Tuning') # reshift plot around epochs
+    plt.legend(loc='upper right')
+    plt.title('Training and Validation Loss')
+    plt.xlabel('epoch')
+    plt.show()
+
+
