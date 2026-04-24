@@ -224,7 +224,7 @@ def walk_through_dir(dir_path):
   for dirpath, dirnames, filenames in os.walk(dir_path):
     print(f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'.")
 
-
+# compare history between different model
 def compare_historys(original_history, new_history, initial_epochs=5):
     """
     Compares two TensorFlow model History objects.
